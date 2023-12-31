@@ -1,6 +1,6 @@
 step 1.
--set up environment credentials like DB_DATABASE,DB_USERNAME,DB_PASSWORD 
--Run below command in your root terminal
+
+Run below command in your root terminal
 
 php artisan migrate:fresh --seed 
 
