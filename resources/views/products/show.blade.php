@@ -42,6 +42,7 @@
                                 <dd class="col-sm-9">{{ $feature->value }}</dd>
 
                             </dl>
+                            <hr>
                         @endforeach
                     @endif
                     <a href="{{ route('products.index') }}" class="btn btn-secondary">Back</a>

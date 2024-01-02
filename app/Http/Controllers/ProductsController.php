@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Models\ProductFeature;
 
 class ProductsController extends Controller
 {
@@ -29,6 +30,7 @@ class ProductsController extends Controller
      */
     public function store(Request $request)
     {
+        
         $request->validate([
             'name' => 'required|string|max:255',
             'price' => 'required|numeric|gt:0',
@@ -46,7 +48,10 @@ class ProductsController extends Controller
             $path = $featureImage->storeAs('public/products/', $fileNameToStore);
             $post['feature_image'] = $fileNameToStore;
         }
+        
         $product = Product::create($post);
+
+        $this->createProductFeatures($request->features, $product->id);
 
         return redirect()->route('products.index')->with('success', 'Product created successfully!');
     }
@@ -56,7 +61,7 @@ class ProductsController extends Controller
      */
     public function show(Product $product)
     {
-         return view('products.show', compact('product'));
+        return view('products.show', compact('product'));
     }
 
     /**
@@ -104,6 +109,15 @@ class ProductsController extends Controller
        
         $product->update($post);
 
+        foreach ($request->features as $feature) {
+            if (isset($feature['id'])) {
+                ProductFeature::where('id', $feature['id'])->update($feature);
+            } else {
+                $feature['product_id'] = $product->id;
+                ProductFeature::create($feature);
+            }
+        }
+
         return redirect()->route('products.index')->with('success', 'Product updated successfully!');
     }
 
@@ -124,5 +138,20 @@ class ProductsController extends Controller
         });
         $product->delete();
         return redirect()->route('products.index')->with('success', 'Product deleted successfully!');
+    }
+
+
+    private function createProductFeatures(array $features, $productId)
+    {
+        foreach ($features as $feature) {
+            $feature['product_id'] = $productId;
+            ProductFeature::create($feature);
+        }
+    }
+
+    public function featureDelete(Request $request){
+       
+        ProductFeature::find($request->id)->delete();
+        return response()->json(['status'=>'success','message'=>'Product feature deleted successfully!']);
     }
 }

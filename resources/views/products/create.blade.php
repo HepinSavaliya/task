@@ -44,6 +44,31 @@
                             {!! Form::label('feature_image', 'Feature Image') !!}
                             {!! Form::file('feature_image', ['class' => 'form-control']) !!}
                         </div>
+                       
+                        <h4 class="mt-2">Add Feature</h4>
+                        <div class="repeater">
+                            <a class="btn btn-success mb-2" data-repeater-create="" onclick="addRow()">Add More feature</a>
+                            <table id="dynamicTable" data-repeater-list="features">
+                                <thead>
+                                    <th>Name</th>
+                                    <th>Value</th>
+                                    <th>Action</th>
+                                </thead>
+                                <tbody data-repeater-item>
+                                    <tr>
+                                        <td width="30%">
+                                            {!! Form::text('name', null, ['class' => 'form-control', ]) !!}
+                                        </td>
+                                        <td>
+                                            {!! Form::text('value', null, ['class' => 'form-control',]) !!}
+                                        </td>
+                                        <td>
+                                            <a class="btn btn-danger text-white" data-repeater-delete>delete</a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                         <button class="btn btn-success mt-2">Create</button>
                     {!! Form::close() !!}
                 </div>
@@ -51,3 +76,31 @@
         </div>
     </div>
 </x-app-layout>
+
+<script src="{{ asset('js/jquery.repeater.min.js') }}"></script>
+<script>
+    $(document).ready(function () {
+        var selector = "body";
+        if ($(selector + " .repeater").length) {
+            var $repeater = $(selector + ' .repeater').repeater({
+                initEmpty: false,
+                defaultValues: {
+                    'status': 1
+                },
+                hide: function (deleteElement) {
+                    if (confirm('Are you sure you want to delete this element?')) {
+                        $(this).slideUp(deleteElement);
+                        $(this).remove();
+                    }
+                },
+                isFirstItemUndeletable: true
+            });
+
+            var value = $(selector + " .repeater").data('value');
+            if (typeof value !== 'undefined' && value.length !== 0) {
+                value = JSON.parse(value);
+                $repeater.setList(value);
+            }
+        }
+    });
+</script>

@@ -31,6 +31,7 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('products', ProductsController::class);
     Route::resource('features', ProductsFeaturesController::class);
+    Route::delete('feature-delete',[ProductsController::class,'featureDelete'])->name('feature.delete');
 });
 
 require __DIR__.'/auth.php';

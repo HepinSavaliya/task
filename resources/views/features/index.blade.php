@@ -15,7 +15,7 @@
                             {{ session('success') }}
                         </div>
                     @endif
-                    <table class="table">
+                    <table class="table" id="data-table">
                         <thead>
                             <tr>
                                 <th>Sr.</th>
